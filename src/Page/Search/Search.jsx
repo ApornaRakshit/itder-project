@@ -1,32 +1,98 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
-    const [searchTerm, setSearchTerm] = useState("");
+    const [formNo, setFormNo] = useState("");
+    const [phoneNo, setPhoneNo] = useState("");
+    const navigate = useNavigate();
 
-    const handleSearch = () => {
-        // Handle the search logic here
-        console.log("Searching for:", searchTerm);
+    const handleSearch = async () => {
+        try {
+            const res = await axios.post(
+                "https://itder.com/api/search-purchase-data",
+                {
+                    form_no: formNo.trim(),
+                    phone_no: phoneNo.trim(),
+                }
+            );
+            console.log({
+                form_no: formNo.trim(),
+                phone_no: phoneNo.trim(),
+            });
+
+            console.log(res.data);
+
+            navigate("/order-details", {
+                state: {
+                    order: res.data.coursePurchaseData,
+                },
+            });
+
+        }
+        catch (err) {
+            console.log(err.response);
+            console.log(err.response?.data);
+        }
     };
 
     return (
-        <div className="min-h-screen flex flex-col text-text_40px font-bold items-center justify-center">
-            <h1 className="w-[600px] mx-auto">Search here</h1>
-            <div className="h-[52px] relative col-span-4 w-[600px] mx-auto">
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="search"
-                    className="text-black px-2 w-full block h-full outline-0 rounded-[4px] border"
-                />
-                <IoMdSearch
+        <div className="min-h-screen flex items-center justify-center">
 
-                    className="text-2xl text-black absolute right-2 top-2"
-                />
-            </div> 
+            <div className="bg-white shadow-lg rounded-lg p-8 w-[600px]">
+
+                <h1 className="text-3xl font-bold text-center mb-8">
+                    Search Order
+                </h1>
+
+                {/* Form Number */}
+
+                <div className="mb-5">
+
+                    <label className="font-semibold block mb-2">
+                        Form Number
+                    </label>
+
+                    <input
+                        type="text"
+                        value={formNo}
+                        onChange={(e) => setFormNo(e.target.value)}
+                        placeholder="Enter Form Number"
+                        className="w-full border rounded-md p-3"
+                    />
+
+                </div>
+
+                {/* Phone Number */}
+
+                <div className="mb-6">
+
+                    <label className="font-semibold block mb-2">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="text"
+                        value={phoneNo}
+                        onChange={(e) => setPhoneNo(e.target.value)}
+                        placeholder="Enter Phone Number"
+                        className="w-full border rounded-md p-3"
+                    />
+
+                </div>
+
+                <button
+                    onClick={handleSearch}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg flex items-center justify-center gap-2"
+                >
+                    <IoMdSearch />
+                    Search
+                </button>
+
+            </div>
 
         </div>
-         
     );
 };
 
