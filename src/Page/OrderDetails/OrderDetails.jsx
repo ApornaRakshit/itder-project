@@ -6,6 +6,10 @@ import axios from "axios";
 const OrderDetails = () => {
     const location = useLocation();
 
+    console.log("OrderDetails Rendered");
+    console.log(location.state);
+
+
     const order = location.state?.order;
 
     const [course, setCourse] = useState(null);

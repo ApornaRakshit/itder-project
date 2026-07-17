@@ -40,6 +40,7 @@ const Checkout = () => {
     });
 
     const [photo, setPhoto] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [preview, setPreview] = useState("");
 
     const handleChange = (e) => {
@@ -60,6 +61,26 @@ const Checkout = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!formData.name.trim()) {
+            return toast.error("Name is required");
+        }
+
+        if (!formData.email.trim()) {
+            return toast.error("Email is required");
+        }
+
+        if (!formData.phone_no.trim()) {
+            return toast.error("Phone Number is required");
+        }
+
+        if (!formData.gender) {
+            return toast.error("Please select gender");
+        }
+
+        if (!photo) {
+            return toast.error("Student photo is required");
+        }
 
         const data = new FormData();
 
@@ -99,6 +120,8 @@ const Checkout = () => {
             data.append("photo", photo);
         }
 
+        setLoading(true);
+
         try {
             const res = await axios.post(
                 "https://itder.com/api/course-purchase",
@@ -109,10 +132,16 @@ const Checkout = () => {
                     },
                 }
             );
-            // console.log(res.data);
-            console.log(JSON.stringify(res.data, null, 2));
+
+            console.log("Full Response:");
+            console.log(res.data);
+
+            console.log("Course Purchase Data:");
+            console.log(res.data.coursePurchaseData);
 
             toast.success("Admission submitted successfully");
+
+            //console.log("Navigating to Order Details...");
 
             removeCart();
 
@@ -123,10 +152,19 @@ const Checkout = () => {
             });
         }
         catch (err) {
+
             console.log("Status:", err.response?.status);
             console.log("Response:", err.response?.data);
 
-            toast.error(err.response?.data?.message || "Submission Failed");
+            toast.error(
+                err.response?.data?.message || "Submission Failed"
+            );
+
+        }
+        finally {
+
+            setLoading(false);   // <-- ADD HERE
+
         }
     };
 
@@ -495,11 +533,24 @@ const Checkout = () => {
                                         </p>
                                     </div>
 
-                                    <button
+                                    {/* <button
                                         type="submit"
                                         className="font-medium text-black border-2 hover:bg-[#D2C5A2] duration-300 py-2 px-4 block w-full"
                                     >
                                         Submit
+                                    </button> */}
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="font-medium text-black border-2 hover:bg-[#D2C5A2] duration-300 py-2 px-4 block w-full disabled:opacity-50"
+                                    >
+                                        {
+                                            loading
+                                                ?
+                                                "Submitting..."
+                                                :
+                                                "Submit"
+                                        }
                                     </button>
                                 </div>
                             </div>
