@@ -163,8 +163,7 @@ const Checkout = () => {
         }
         finally {
 
-            setLoading(false);   // <-- ADD HERE
-
+            setLoading(false);
         }
     };
 
@@ -532,13 +531,6 @@ const Checkout = () => {
                                             Tk {total}
                                         </p>
                                     </div>
-
-                                    {/* <button
-                                        type="submit"
-                                        className="font-medium text-black border-2 hover:bg-[#D2C5A2] duration-300 py-2 px-4 block w-full"
-                                    >
-                                        Submit
-                                    </button> */}
                                     <button
                                         type="submit"
                                         disabled={loading}
